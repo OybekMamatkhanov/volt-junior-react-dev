@@ -2,19 +2,25 @@ import React, { Component } from 'react';
 import Button from 'react-bootstrap/lib/Button';
 import PageHeader from 'react-bootstrap/lib/PageHeader';
 import TableList from '../components/TableList';
+import { BeatLoader } from 'react-spinners';
 
-import { getCustomers } from '../API';
+
 import { customersColumns } from '../helpers/columns';
 import Modal from '../components/Modal';
+import DynamicForm from '../components/DynamicForm';
 
-export default class Customers extends Component {
+import { connect } from 'react-redux';
+import { fetchCustomers } from '../actions/customers-actions';
+import { fetchCustomer } from '../actions/customer';
+
+class Customers extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             data: [],
             modalIsOpen: false,
-            editData: {}
+            editData: {},
         };
 
         this.toggleCustomerModal = this.toggleCustomerModal.bind(this);
@@ -23,11 +29,7 @@ export default class Customers extends Component {
     }
 
     componentDidMount() {
-        getCustomers()
-            .then(res => res.json())
-            .then(data => {
-                this.setState({ data })
-            })
+        this.props.getCustomers();
     }
 
     toggleCustomerModal() {
@@ -40,42 +42,62 @@ export default class Customers extends Component {
         })
     }
 
-    editCustomer(data) {
-        return () => {
-            this.setState({ editData: data }, () => {
-                this.toggleCustomerModal();
-            })
-        }
+    editCustomer(id) {
+        this.props.getCustomer(id);
+        
+        this.toggleCustomerModal();
     }
 
     render() {
-        let { data, modalIsOpen, editData } = this.state;
-
+        let { modalIsOpen, editData } = this.state;
+        let { customers } = this.props;
         return (
             <div>
+                
                 <PageHeader>
                     Customer List <Button onClick={this.createCustomer}>Create</Button>
                 </PageHeader>
-
-                <TableList
-                    data={data}
-                    columns={customersColumns}
-                    onEdit={this.editCustomer}
-                />
-
-                {
-                    modalIsOpen &&
-                    <Modal
-                        open={modalIsOpen}
-                        title="Example"
-                        close={this.toggleCustomerModal}
-                    >
-                        <ul>
-                            {Object.keys(editData).map(k => <li>{editData[k]}</li>)}
-                        </ul>
-                    </Modal>
-                }
+                    {
+                        customers.isFetched ? 
+                        <TableList
+                            data={customers.data}
+                            columns={customersColumns}
+                            onEdit={this.editCustomer}
+                        /> :                
+                        <BeatLoader
+                        sizeUnit={"px"}
+                        size={50}
+                        color={'#D3D3D3'}
+                        loading={this.state.loading}
+                        /> 
+                    }        
+                    {
+                        modalIsOpen &&
+                        <Modal
+                            open={modalIsOpen}
+                            title="Edit Customer"
+                            close={this.toggleCustomerModal}
+                        >                               
+                            
+                        </Modal>
+                    }
+                    :
+                
             </div>
         )
     }
 }
+
+const mapStateToProps = state => ({
+    customers: state.customers,
+    customer: state.customer
+});
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getCustomers: () => fetchCustomers(dispatch),
+        getCustomer: (id) => fetchCustomer(dispatch, id),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Customers);

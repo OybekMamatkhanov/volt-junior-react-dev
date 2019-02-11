@@ -6,3 +6,6 @@
 
 # macOSx version
 /__MACOSX
+
+#sqlite
+/invoices.sqlite
