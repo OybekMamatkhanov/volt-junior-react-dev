@@ -7,11 +7,12 @@ import { BeatLoader } from 'react-spinners';
 
 import { customersColumns } from '../helpers/columns';
 import Modal from '../components/Modal';
-import DynamicForm from '../components/DynamicForm';
+//import DynamicForm from '../components/DynamicForm';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import { connect } from 'react-redux';
 import { fetchCustomers } from '../actions/customers-actions';
-import { fetchCustomer } from '../actions/customer';
+import { fetchCustomer, clearCustomer, updateCustomer, addCustomer } from '../actions/customer';
 
 class Customers extends Component {
     constructor(props) {
@@ -21,11 +22,14 @@ class Customers extends Component {
             data: [],
             modalIsOpen: false,
             editData: {},
+            isNew: true
         };
 
         this.toggleCustomerModal = this.toggleCustomerModal.bind(this);
         this.createCustomer = this.createCustomer.bind(this);
+        this.openCustomer = this.openCustomer.bind(this);
         this.editCustomer = this.editCustomer.bind(this);
+        this.openCreateCustomerForm = this.openCreateCustomerForm.bind(this);
     }
 
     componentDidMount() {
@@ -33,56 +37,85 @@ class Customers extends Component {
     }
 
     toggleCustomerModal() {
-        this.setState({ modalIsOpen: !this.state.modalIsOpen })
+        const { modalIsOpen } = this.state;
+
+        if (modalIsOpen) this.props.clearCustomer();
+        this.setState({ modalIsOpen: !modalIsOpen })
     }
 
-    createCustomer() {
-        this.setState({ editData: {} }, () => {
+    createCustomer(values) {
+        this.props.addCustomer(values);
+        this.props.getCustomers();
+    }
+
+    openCreateCustomerForm() {
+        this.setState({ isNew: true }, () => {
             this.toggleCustomerModal();
         })
     }
 
-    editCustomer(id) {
+    openCustomer(id) {
         this.props.getCustomer(id);
+
+        this.setState({ isNew: false });
         
         this.toggleCustomerModal();
     }
 
+    editCustomer(values) {        
+        this.props.updateCustomer(values.id, values);
+        this.props.getCustomers();
+    }
+
     render() {
-        let { modalIsOpen, editData } = this.state;
-        let { customers } = this.props;
+        const { modalIsOpen, editData } = this.state;
+        const { customers, customer } = this.props;
         return (
-            <div>
-                
+            <div>                
                 <PageHeader>
-                    Customer List <Button onClick={this.createCustomer}>Create</Button>
+                    Customer List <Button onClick={this.openCreateCustomerForm}>Create</Button>
                 </PageHeader>
                     {
                         customers.isFetched ? 
                         <TableList
                             data={customers.data}
                             columns={customersColumns}
-                            onEdit={this.editCustomer}
+                            onEdit={this.openCustomer}
                         /> :                
                         <BeatLoader
-                        sizeUnit={"px"}
-                        size={50}
-                        color={'#D3D3D3'}
-                        loading={this.state.loading}
+                            sizeUnit={"px"}
+                            size={50}
+                            color={'#D3D3D3'}
+                            loading={this.state.loading}
                         /> 
                     }        
                     {
                         modalIsOpen &&
                         <Modal
                             open={modalIsOpen}
-                            title="Edit Customer"
+                            title="Customer"
                             close={this.toggleCustomerModal}
                         >                               
-                            
+                            <Formik
+                                initialValues={customer.data}
+                                enableReinitialize={!!(customer.data && customer.data.id)}
+                                onSubmit={this.state.isNew ? this.createCustomer : this.editCustomer}
+                                render={() => {
+                                    return (
+                                        <Form>
+                                            <Field type="name" name="name" />
+                                            <Field type="address" name="address" />
+                                            <Field type="phone" name="phone" />
+                                            <button type="submit">
+                                                Submit
+                                            </button>
+                                        </Form>
+                                    )
+                                }}
+                            />
                         </Modal>
                     }
                     :
-                
             </div>
         )
     }
@@ -97,6 +130,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getCustomers: () => fetchCustomers(dispatch),
         getCustomer: (id) => fetchCustomer(dispatch, id),
+        clearCustomer: () => clearCustomer(dispatch),
+        updateCustomer: (id, data) => updateCustomer(dispatch, id, data),
+        addCustomer: (data) => addCustomer(dispatch, data),
+
     }
 }
 

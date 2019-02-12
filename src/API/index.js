@@ -17,6 +17,26 @@ export function getCustomer(id) {
     return fetch(customerUrl(id));
 }
 
+export function putCustomer(id, data) {
+    return fetch(customerUrl(id), {
+        method: 'PUT',
+        headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+        body: JSON.stringify(data)
+    });
+}
+
+export function postCustomer(data) {
+    return fetch(customersUrl, {
+        method: 'POST',
+        headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+        body: JSON.stringify(data)
+    });
+}
+
 export function getProducts() {
     return fetch(productsUrl);
 }
