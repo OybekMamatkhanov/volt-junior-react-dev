@@ -3,44 +3,52 @@ import Button from 'react-bootstrap/lib/Button';
 import PageHeader from 'react-bootstrap/lib/PageHeader';
 import TableList from '../components/TableList';
 
-import { getInvoices } from '../API';
 import { invoicesColumns } from '../helpers/columns';
+import { fetchInvoices } from '../actions/invoices-actions';
+import { connect } from 'react-redux';
+import { INVOICES_ITEM_URL } from '../const/app_urls';
+import { withRouter } from 'react-router-dom';
 
-export default class Invoices extends Component {
+class Invoices extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             data: []
         };
+        this.transitionTo = this.transitionTo.bind(this);
     }
 
-    handleClick() {
-        console.log("rest");
+    transitionTo(path) {
+        return () => this.props.history.push(path)
     }
 
     componentDidMount() {
-        getInvoices()
-            .then(res => res.json())
-            .then(data => {
-                this.setState({ data })
-            })
+        console.log(this.props);
+        this.props.getInvoices();
     }
 
     render() {
-        let { data } = this.state;
+        
         
         return (
             <div>
                 <PageHeader>
-                    Invoice List <Button onClick={this.handleClick}>Create</Button>
+                    Invoice List <Button onClick={this.transitionTo(`invoices/:id/edit`)}>Create</Button>
                 </PageHeader>
-
-                <TableList
-                    data={data}
-                    columns={invoicesColumns}
-                />
             </div>
         )
     }
 }
+
+const mapStateToProps = state => ({
+    invoices: state.invoices,
+});
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getInvoices: () => fetchInvoices(dispatch),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Invoices);

@@ -9,3 +9,5 @@ export const invoiceUrl = (id) => `/api/invoices/${id}`; // GET|PUT|DELETE
 
 export const invoiceItemsUrl = (id) => `/api/invoices/${id}/items`;// GET|POST
 export const invoiceItemUrl = (id, invoice_id) => `/api/invoices/${invoice_id}/items/${id}`;// GET|PUT|DELETE
+
+export const invoiceItemsEditUrl = (id) => `/api/invoices/${id}/edit`;

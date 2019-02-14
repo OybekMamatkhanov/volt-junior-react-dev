@@ -6,8 +6,10 @@ import Layout from './layouts/Layout';
 import Invoices from './containers/Invoices';
 import Customers from './containers/Customers';
 import Products from './containers/Products';
+import InvoiceItem from './components/InvoiceItem';
 
-import { INVOICES_URL, CUSTOMERS_URL, PRODUCTS_URL } from './const/app_urls'
+
+import { INVOICES_URL, CUSTOMERS_URL, PRODUCTS_URL, INVOICES_ITEM_URL } from './const/app_urls'
 
 class App extends Component {
     render() {
@@ -17,7 +19,8 @@ class App extends Component {
                     <Switch>
                         <Route exact path={INVOICES_URL} component={Invoices} />
                         <Route path={CUSTOMERS_URL} component={Customers} />
-                        <Route path={PRODUCTS_URL} component={Products} />
+                        <Route path={PRODUCTS_URL} component={Products} />                        
+                        <Route path={INVOICES_ITEM_URL} component={InvoiceItem} />
                     </Switch>
                 </Layout>
             </Router>

@@ -14,4 +14,4 @@ export function fetchCustomers(dispatch) {
                 payload: data
             });
         });
-}
+}   

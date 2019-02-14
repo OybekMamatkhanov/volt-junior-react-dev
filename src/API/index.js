@@ -1,8 +1,8 @@
 import { 
     customersUrl, 
-    customerUrl, 
-    productUrl, 
+    customerUrl,
     productsUrl, 
+    productUrl,  
     invoicesUrl, 
     invoiceUrl, 
     invoiceItemsUrl, 
@@ -43,6 +43,26 @@ export function getProducts() {
 
 export function getProduct(id) {
     return fetch(productUrl(id));
+}
+
+export function putProduct(id, data) {
+    return fetch(productUrl(id), {
+        method: 'PUT',
+        headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+        body: JSON.stringify(data)
+    });
+}
+
+export function postProduct(data) {
+    return fetch(productsUrl, {
+        method: 'POST',
+        headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+        body: JSON.stringify(data)
+    });
 }
 
 export function getInvoices() {

@@ -7,7 +7,6 @@ import { BeatLoader } from 'react-spinners';
 
 import { customersColumns } from '../helpers/columns';
 import Modal from '../components/Modal';
-//import DynamicForm from '../components/DynamicForm';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import { connect } from 'react-redux';
@@ -68,7 +67,7 @@ class Customers extends Component {
     }
 
     render() {
-        const { modalIsOpen, editData } = this.state;
+        const { modalIsOpen } = this.state;
         const { customers, customer } = this.props;
         return (
             <div>                
@@ -107,7 +106,7 @@ class Customers extends Component {
                                             <Field type="address" name="address" />
                                             <Field type="phone" name="phone" />
                                             <button type="submit">
-                                                Submit
+                                                {this.state.isNew ? `Save` : `Edit`}
                                             </button>
                                         </Form>
                                     )
@@ -132,8 +131,7 @@ const mapDispatchToProps = (dispatch) => {
         getCustomer: (id) => fetchCustomer(dispatch, id),
         clearCustomer: () => clearCustomer(dispatch),
         updateCustomer: (id, data) => updateCustomer(dispatch, id, data),
-        addCustomer: (data) => addCustomer(dispatch, data),
-
+        addCustomer: (data) => addCustomer(dispatch, data)
     }
 }
 
