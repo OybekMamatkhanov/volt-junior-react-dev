@@ -11,7 +11,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import { connect } from 'react-redux';
 import { fetchCustomers } from '../actions/customers-actions';
-import { fetchCustomer, clearCustomer, updateCustomer, addCustomer } from '../actions/customer';
+import { fetchCustomer, clearCustomer, updateCustomer, addCustomer, removeCustomer } from '../actions/customer';
 
 class Customers extends Component {
     constructor(props) {
@@ -20,6 +20,7 @@ class Customers extends Component {
         this.state = {
             data: [],
             modalIsOpen: false,
+            deleteModalIsOpen: false,
             editData: {},
             isNew: true
         };
@@ -29,9 +30,12 @@ class Customers extends Component {
         this.openCustomer = this.openCustomer.bind(this);
         this.editCustomer = this.editCustomer.bind(this);
         this.openCreateCustomerForm = this.openCreateCustomerForm.bind(this);
+        this.onRemoveCustomer = this.onRemoveCustomer.bind(this);
+        this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
+        this.openDeleteModal = this.openDeleteModal.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount() {        
         this.props.getCustomers();
     }
 
@@ -40,6 +44,11 @@ class Customers extends Component {
 
         if (modalIsOpen) this.props.clearCustomer();
         this.setState({ modalIsOpen: !modalIsOpen })
+    }
+
+    toggleDeleteModal() {
+        const { deleteModalIsOpen } = this.state;
+        this.setState({ deleteModalIsOpen: !deleteModalIsOpen })
     }
 
     createCustomer(values) {
@@ -51,6 +60,9 @@ class Customers extends Component {
         this.setState({ isNew: true }, () => {
             this.toggleCustomerModal();
         })
+    }
+openDeleteModal(id) {
+        this.toggleDeleteModal();       
     }
 
     openCustomer(id) {
@@ -66,8 +78,13 @@ class Customers extends Component {
         this.props.getCustomers();
     }
 
+    onRemoveCustomer(values) {
+        this.props.removeCustomer(values.id);
+        this.props.getCustomers();
+    }
+
     render() {
-        const { modalIsOpen } = this.state;
+        const { modalIsOpen, deleteModalIsOpen } = this.state;
         const { customers, customer } = this.props;
         return (
             <div>                
@@ -80,6 +97,7 @@ class Customers extends Component {
                             data={customers.data}
                             columns={customersColumns}
                             onEdit={this.openCustomer}
+                            onDelete={this.openDeleteModal}
                         /> :                
                         <BeatLoader
                             sizeUnit={"px"}
@@ -87,7 +105,7 @@ class Customers extends Component {
                             color={'#D3D3D3'}
                             loading={this.state.loading}
                         /> 
-                    }        
+                    }      
                     {
                         modalIsOpen &&
                         <Modal
@@ -108,13 +126,24 @@ class Customers extends Component {
                                             <button type="submit">
                                                 {this.state.isNew ? `Save` : `Edit`}
                                             </button>
+                                            {/* <button type="delete" onClick={this.onRemoveCustomer}>
+                                                Delete
+                                            </button> */}
                                         </Form>
                                     )
                                 }}
                             />
                         </Modal>
                     }
-                    :
+                    {
+                        deleteModalIsOpen && 
+                        <Modal
+                            open={deleteModalIsOpen}
+                            title="Are you sure?"
+                            close={this.toggleDeleteModal}
+                        >
+                        </Modal>
+                    }  
             </div>
         )
     }
@@ -131,7 +160,8 @@ const mapDispatchToProps = (dispatch) => {
         getCustomer: (id) => fetchCustomer(dispatch, id),
         clearCustomer: () => clearCustomer(dispatch),
         updateCustomer: (id, data) => updateCustomer(dispatch, id, data),
-        addCustomer: (data) => addCustomer(dispatch, data)
+        addCustomer: (data) => addCustomer(dispatch, data),
+        removeCustomer: (id) => removeCustomer(dispatch, id)
     }
 }
 

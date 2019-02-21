@@ -15,8 +15,14 @@ export default class TableList extends Component {
         }
     }
 
+    handleDelete (id) {
+        return () => {
+            this.props.onDelete(id);
+        }
+    }
+
     render() {
-        const { data, columns, onEdit } = this.props;
+        const { data, columns } = this.props;
 
         return (
             <Table responsive>
@@ -39,7 +45,8 @@ export default class TableList extends Component {
                                     <td key={column.id}>{item[column.field] ? item[column.field] : <span>&nbsp;</span>}</td>
                                 )}
 
-                                {onEdit && <td><Button onClick={this.handleEdit(item.id)}>edit</Button></td>}
+                                <td><Button onClick={this.handleEdit(item.id)}>Edit</Button></td>
+                                <td><Button onClick={this.handleDelete(item.id)}>Remove</Button></td>
                             </tr>
                         ))
                     }

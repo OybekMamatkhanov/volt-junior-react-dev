@@ -3,6 +3,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Button from 'react-bootstrap/lib/Button';
 
 function CustomModal({open, title, close, children}) {
+  console.log(open)
     return (
         <Modal show={open} onHide={close}>
           <Modal.Header closeButton>

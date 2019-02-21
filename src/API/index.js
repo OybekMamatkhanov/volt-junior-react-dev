@@ -27,6 +27,12 @@ export function putCustomer(id, data) {
     });
 }
 
+export function deleteCustomer(id) {
+    return fetch(customerUrl(id), {
+        method: 'DELETE'
+    });
+}
+
 export function postCustomer(data) {
     return fetch(customersUrl, {
         method: 'POST',

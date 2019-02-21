@@ -1,4 +1,4 @@
-import { getCustomer, putCustomer, postCustomer } from '../API';
+import { getCustomer, putCustomer, postCustomer, deleteCustomer } from '../API';
 
 export const FETCH_CUSTOMER = 'customer:fetchCustomer';
 export const FETCHED_CUSTOMER = 'customer:fetchedCustomer';
@@ -51,6 +51,22 @@ export function addCustomer(dispatch, data) {
         .then(data => {
             dispatch({
                 type: ADDED_CUSTOMER,
+                payload: data
+            });
+        });
+}
+
+export const DELETE_CUSTOMER = 'customer:deleteCustomer';
+export const DELETED_CUSTOMER = 'customer:deletedCustomer';
+
+export function removeCustomer(dispatch, id) {
+    dispatch({ type: DELETE_CUSTOMER });
+
+    deleteCustomer(id)
+        .then(res => res.json())
+        .then(data => {
+            dispatch({
+                type: DELETED_CUSTOMER,
                 payload: data
             });
         });
