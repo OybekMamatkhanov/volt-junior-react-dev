@@ -10,19 +10,22 @@ import Modal from '../components/Modal';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import { connect } from 'react-redux';
-import { fetchCustomers } from '../actions/customers-actions';
+import { fetchCustomers } from '../actions/customers';
 import { fetchCustomer, clearCustomer, updateCustomer, addCustomer, removeCustomer } from '../actions/customer';
 
 class Customers extends Component {
     constructor(props) {
         super(props);
 
+
+
         this.state = {
             data: [],
             modalIsOpen: false,
             deleteModalIsOpen: false,
             editData: {},
-            isNew: true
+            isNew: true,
+            deletingCustomerId: null
         };
 
         this.toggleCustomerModal = this.toggleCustomerModal.bind(this);
@@ -39,6 +42,19 @@ class Customers extends Component {
         this.props.getCustomers();
     }
 
+    
+    componentDidUpdate(prevProps) {
+        console.log("Current customer", this.props.customer.isDeleted);
+        console.log("Previous customer", prevProps.customer.isDeleted);
+
+        
+        if (this.props.customer.isDeleted !== prevProps.customer.isDeleted) {
+            this.props.getCustomers();
+            this.toggleDeleteModal();
+        }
+      }
+
+
     toggleCustomerModal() {
         const { modalIsOpen } = this.state;
 
@@ -48,7 +64,7 @@ class Customers extends Component {
 
     toggleDeleteModal() {
         const { deleteModalIsOpen } = this.state;
-        this.setState({ deleteModalIsOpen: !deleteModalIsOpen })
+        this.setState({ deleteModalIsOpen: !deleteModalIsOpen });
     }
 
     createCustomer(values) {
@@ -61,8 +77,11 @@ class Customers extends Component {
             this.toggleCustomerModal();
         })
     }
-openDeleteModal(id) {
-        this.toggleDeleteModal();       
+    
+    openDeleteModal(id) {
+        this.setState({
+            deletingCustomerId: id
+        }, this.toggleDeleteModal)
     }
 
     openCustomer(id) {
@@ -78,9 +97,10 @@ openDeleteModal(id) {
         this.props.getCustomers();
     }
 
-    onRemoveCustomer(values) {
-        this.props.removeCustomer(values.id);
-        this.props.getCustomers();
+    onRemoveCustomer(id) {
+        return () => {
+             this.props.removeCustomer(id);
+        }        
     }
 
     render() {
@@ -126,22 +146,23 @@ openDeleteModal(id) {
                                             <button type="submit">
                                                 {this.state.isNew ? `Save` : `Edit`}
                                             </button>
-                                            {/* <button type="delete" onClick={this.onRemoveCustomer}>
-                                                Delete
-                                            </button> */}
                                         </Form>
                                     )
                                 }}
                             />
                         </Modal>
                     }
-                    {
+                    {   
                         deleteModalIsOpen && 
                         <Modal
                             open={deleteModalIsOpen}
                             title="Are you sure?"
                             close={this.toggleDeleteModal}
                         >
+                            <React.Fragment>
+                                    <button onClick={this.onRemoveCustomer(this.state.deletingCustomerId)}>yes</button>
+                                    <button>no</button>
+                                </React.Fragment>
                         </Modal>
                     }  
             </div>

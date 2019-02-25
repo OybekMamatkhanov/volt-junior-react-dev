@@ -9,7 +9,7 @@ import Modal from '../components/Modal';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import { connect } from 'react-redux';
-import { fetchProducts } from '../actions/products-actions';
+import { fetchProducts } from '../actions/products';
 import { fetchProduct, addProduct, clearProduct, updateProduct } from '../actions/product';
 
 class Products extends Component {

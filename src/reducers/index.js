@@ -1,8 +1,8 @@
-import customersReducer from './customers-reducers';
+import customersReducer from './customers';
 import customerReducer from './customer';
-import productsReducer from './products-reducers';
+import productsReducer from './products';
 import productReducer from './product';
-import invoicesReducer from './invoices-reducers'
+import invoicesReducer from './invoices'
 
 import { combineReducers } from 'redux';
 

@@ -1,18 +1,18 @@
 import { 
-    FETCH_CUSTOMERS, 
-    FETCHED_CUSTOMERS,
-} from '../actions/customers-actions';
+    FETCH_INVOICES, 
+    FETCHED_INVOICES,
+} from '../actions/invoices';
 
 const initialState = {
     isFetched: false,
     data: []
 };
 
-export default function customersReducer(state = initialState, action) {
+export default function invoicesReducer(state = initialState, action) {
     switch (action.type) {
-        case FETCH_CUSTOMERS:
+        case FETCH_INVOICES:
             return { isFetched: false };
-        case FETCHED_CUSTOMERS:
+        case FETCHED_INVOICES:
             return { isFetched: true, data: action.payload };
         default: 
             return state;

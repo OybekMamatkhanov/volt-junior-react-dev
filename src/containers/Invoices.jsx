@@ -4,7 +4,7 @@ import PageHeader from 'react-bootstrap/lib/PageHeader';
 import TableList from '../components/TableList';
 
 import { invoicesColumns } from '../helpers/columns';
-import { fetchInvoices } from '../actions/invoices-actions';
+import { fetchInvoices } from '../actions/invoices';
 import { connect } from 'react-redux';
 import { INVOICES_ITEM_URL } from '../const/app_urls';
 import { withRouter } from 'react-router-dom';

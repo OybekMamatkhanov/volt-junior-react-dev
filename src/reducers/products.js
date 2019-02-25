@@ -1,7 +1,7 @@
 import {
     FETCH_PRODUCTS,
     FETCHED_PRODUCTS,
-} from '../actions/products-actions';
+} from '../actions/products';
 
 const initialState = {
     isFetched: false,
