@@ -6,8 +6,7 @@ import Layout from './layouts/Layout';
 import Invoices from './containers/Invoices';
 import Customers from './containers/Customers';
 import Products from './containers/Products';
-import InvoiceItem from './components/InvoiceItem';
-
+import InvoiceItem from './containers/InvoiceItem';
 
 import { INVOICES_URL, CUSTOMERS_URL, PRODUCTS_URL, INVOICES_ITEM_URL } from './const/app_urls'
 

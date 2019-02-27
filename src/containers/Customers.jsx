@@ -43,11 +43,7 @@ class Customers extends Component {
     }
 
     
-    componentDidUpdate(prevProps) {
-        console.log("Current customer", this.props.customer.isDeleted);
-        console.log("Previous customer", prevProps.customer.isDeleted);
-
-        
+    componentDidUpdate(prevProps) {       
         if (this.props.customer.isDeleted !== prevProps.customer.isDeleted) {
             this.props.getCustomers();
             this.toggleDeleteModal();
