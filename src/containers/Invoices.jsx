@@ -29,12 +29,12 @@ class Invoices extends Component {
     }
 
     render() {
-        
-        
+        const { invoices } = this.props;
+        console.log(invoices);
         return (
             <div>
                 <PageHeader>
-                    Invoice List <Button onClick={this.transitionTo(`invoices/:id/edit`)}>Create</Button>
+                    Invoice List <Button onClick={this.transitionTo(`invoices/:id/create`)}>Create</Button>
                 </PageHeader>
             </div>
         )

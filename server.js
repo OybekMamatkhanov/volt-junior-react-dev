@@ -270,6 +270,7 @@ app.route('/api/invoices/:invoice_id/items')
     });
   });
 
+  
 app.route('/api/invoices/:invoice_id/items/:id')
   .get(function(req, res) {
     InvoiceItem.findById(req.params.id).then(function(invoice_item) {

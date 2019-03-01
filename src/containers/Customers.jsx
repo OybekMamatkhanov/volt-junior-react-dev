@@ -20,10 +20,8 @@ class Customers extends Component {
 
 
         this.state = {
-            data: [],
             modalIsOpen: false,
             deleteModalIsOpen: false,
-            editData: {},
             isNew: true,
             deletingCustomerId: null
         };

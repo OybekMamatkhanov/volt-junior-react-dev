@@ -75,4 +75,13 @@ export function getInvoices() {
     return fetch(invoicesUrl);
 }
 
+export function postInvoice(data) {
+    return fetch(invoicesUrl, {
+        method: 'POST',
+        headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+        body: JSON.stringify(data)
+    });
+}
 
