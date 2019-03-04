@@ -30,20 +30,34 @@ class InvoiceItem extends Component {
         this.handleChangeProduct = this.handleChangeProduct.bind(this);
         this.handleChangeDiscount = this.handleChangeDiscount.bind(this);
         this.addItemsProduct = this.addItemsProduct.bind(this);
-        
-        
     }
 
     componentDidMount() {
         this.props.getCustomers();
         this.props.getProducts();    
-        
-        
+    }
+
+    getProduct(id, field){
+        const { products } = this.props;
+        const product = products.data.find(item => item.id === id);
+        if (field === 'name')
+            return product.name;
+        if (field === 'price')
+            return product.price;
+
     }
     
     addItemsProduct() {
         let { product_id } = this.state;
-        this.setState({items: [...this.state.items, {product_id: product_id, quantity: 1}]});
+
+        this.setState({
+            items: [...this.state.items, 
+                {
+                    product_id: product_id, 
+                    quantity: 1
+                }
+            ]
+        });
     }
 
     handleChangeCustomer(event) {
@@ -66,13 +80,15 @@ class InvoiceItem extends Component {
         });
     }
 
+    handleChangeQuantity(event) {
+
+    }
+
 
     render() {
-        const { customers, products, getProduct } = this.props;
+        const { customers, products } = this.props;
         const { items } = this.state;
-        //console.log("current state:", this.state);
-        //console.log("Current state: ", this.props.getProduct(477)); 
-        //console.log(this.props.getProduct(430));
+
         return (
             <div>
                 <h1>
@@ -80,7 +96,7 @@ class InvoiceItem extends Component {
                 </h1>
                 <div className="invoice-data">
                     <form>
-                        <FormGroup controlId="invoiceInputDiscount" >
+                        <FormGroup controlId="invoiceInputDiscount">
                             <ControlLabel>Discount (%)</ControlLabel>
                             <FormControl
                                 bsSize="sm"
@@ -119,8 +135,10 @@ class InvoiceItem extends Component {
                                     <tbody>
                                         {
                                             items.map((item, index) => (
-                                                <tr key={item.product_id + index}>
-                                                    <td></td>
+                                                <tr key={index}>
+                                                    <td>{this.getProduct(item.product_id, 'name')}</td>
+                                                    <td>{this.getProduct(item.product_id, 'price')}</td>
+                                                    <td><input type="text" defaultValue={item.quantity} onChange={this.handleChangeQuantity} /></td>
                                                 </tr>
                                             ))                                            
                                         }
@@ -148,7 +166,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getCustomers: () => fetchCustomers(dispatch),
         getProducts: () => fetchProducts(dispatch),
-        getProduct: () => fetchProduct(dispatch, id)
+        getProduct: (id) => fetchProduct(dispatch, id)
     }
 }
 
