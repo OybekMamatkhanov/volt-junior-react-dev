@@ -5,7 +5,6 @@ export const FETCHED_PRODUCT = 'product:fetchedProduct';
 
 export function fetchProduct(dispatch, id) {
     dispatch({ type: FETCH_PRODUCT });
-    console.log("fetchProduct: ", id);
     getProduct(id)
         .then(res => res.json())
         .then(data => {

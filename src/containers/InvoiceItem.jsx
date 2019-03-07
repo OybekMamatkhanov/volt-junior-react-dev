@@ -14,6 +14,7 @@ import { fetchProduct } from '../actions/product';
 import { get } from 'http';
 
 
+
 class InvoiceItem extends Component {
     constructor(props) {
         super(props);
@@ -29,15 +30,24 @@ class InvoiceItem extends Component {
         this.handleChangeCustomer = this.handleChangeCustomer.bind(this);
         this.handleChangeProduct = this.handleChangeProduct.bind(this);
         this.handleChangeDiscount = this.handleChangeDiscount.bind(this);
+        this.handleChangeQuantity = this.handleChangeQuantity.bind(this);
         this.addItemsProduct = this.addItemsProduct.bind(this);
+        this.handleOnSubmit = this.handleOnSubmit.bind(this);        
     }
 
     componentDidMount() {
         this.props.getCustomers();
-        this.props.getProducts();    
+        this.props.getProducts();
+
+        const { items } = this.state;
+
+        console.log(this.state.total)
+        
     }
 
     getProduct(id, field){
+        console.log("id: ", id);
+        
         const { products } = this.props;
         const product = products.data.find(item => item.id === id);
         if (field === 'name')
@@ -60,6 +70,7 @@ class InvoiceItem extends Component {
         });
     }
 
+
     handleChangeCustomer(event) {
         this.setState({ 
             customer_id: +event.target.value
@@ -76,13 +87,29 @@ class InvoiceItem extends Component {
 
     handleChangeDiscount(event) {
         this.setState({ 
-            discount: +event.target.value
+            discount: event.target.value
         });
     }
 
-    handleChangeQuantity(event) {
+    handleChangeQuantity(event, id) {
+        let quantityValue = +event.target.value;
+          
+        this.setState(state => {
+            state.items.map((item, i) => {
+                (i === id) ? item.quantity = quantityValue: item;
+            })
+        })
+    }
+
+    handleOnSubmit(event){
+        event.preventDefault();
+        console.log(this.state);
+    }
+
+    calculateTotal(event) {
 
     }
+
 
 
     render() {
@@ -95,7 +122,7 @@ class InvoiceItem extends Component {
                     Create Invoice
                 </h1>
                 <div className="invoice-data">
-                    <form>
+                    <form onSubmit={this.handleOnSubmit}>
                         <FormGroup controlId="invoiceInputDiscount">
                             <ControlLabel>Discount (%)</ControlLabel>
                             <FormControl
@@ -134,17 +161,22 @@ class InvoiceItem extends Component {
                                     </thead>
                                     <tbody>
                                         {
-                                            items.map((item, index) => (
+                                          items &&  items.map((item, index) => (
                                                 <tr key={index}>
                                                     <td>{this.getProduct(item.product_id, 'name')}</td>
                                                     <td>{this.getProduct(item.product_id, 'price')}</td>
-                                                    <td><input type="text" defaultValue={item.quantity} onChange={this.handleChangeQuantity} /></td>
+                                                    <td><input type="text" defaultValue={item.quantity} onChange={(e) => this.handleChangeQuantity(e, index)} /></td>
+                                                    <td>
+                                                        <button type="button" className="close" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             ))                                            
                                         }
                                     </tbody>
                             </Table>
-
+                            <h1>Total: <span>{this.state.total}</span></h1>
 
                             <Button type="submit">Save</Button>
                         </FormGroup>
@@ -166,7 +198,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getCustomers: () => fetchCustomers(dispatch),
         getProducts: () => fetchProducts(dispatch),
-        getProduct: (id) => fetchProduct(dispatch, id)
     }
 }
 

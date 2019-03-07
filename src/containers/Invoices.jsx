@@ -34,7 +34,7 @@ class Invoices extends Component {
         return (
             <div>
                 <PageHeader>
-                    Invoice List <Button onClick={this.transitionTo(`invoices/:id/create`)}>Create</Button>
+                    Invoice List <Button onClick={this.transitionTo(`invoices/create`)}>Create</Button>
                 </PageHeader>
             </div>
         )
